@@ -1,6 +1,8 @@
 'use strict';
 import * as vscode from 'vscode';
 import * as transforms from './Transforms';
+import * as textCommands from './TextCommands';
+import * as conversionCommands from './ConversionCommands';
 import {Modify, View, Application} from 'vscode-extension-common'
 /**
  * TODO - planned features:
@@ -28,183 +30,121 @@ import {Modify, View, Application} from 'vscode-extension-common'
  * - constrain - limit all chars within a regex, all chars outside substituted with specified chars. also limit to lower case or uppercase.  possibly combine with remove accents.
  */
 
-interface LinkedDocument {
-    source: vscode.TextDocument;
-    target: vscode.TextDocument;
-} 
-
 export function activate(context: vscode.ExtensionContext) {
-    let disposable;
+    const registerCommand = (name:string, callback:(...args:any[])=>any) => {
+        context.subscriptions.push(vscode.commands.registerCommand(name, callback));
+    };
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.sortLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.sortLines(textEditor, selections);
-    });
-    context.subscriptions.push(disposable);
+    const registerEditorCommand = (name:string, callback:(editor:vscode.TextEditor)=>void) => {
+        registerCommand(name, () => callback(vscode.window.activeTextEditor));
+    };
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.sortSelections', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.sortSelections(textEditor, selections);
+    registerEditorCommand('dakara-transformer.sortLines', textEditor => {
+        transforms.sortLines(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.reverseLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        Modify.reverseLines(textEditor, selections);
+    registerEditorCommand('dakara-transformer.sortSelections', textEditor => {
+        transforms.sortSelections(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.reverseSelections', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.reverseSelections(textEditor, selections);
+    registerEditorCommand('dakara-transformer.reverseLines', textEditor => {
+        Modify.reverseLines(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.uniqueLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.uniqueLines(textEditor, selections);
+    registerEditorCommand('dakara-transformer.reverseSelections', textEditor => {
+        transforms.reverseSelections(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.uniqueLinesNewDocument', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.uniqueLinesToNewDocument(textEditor, selections);
+    registerEditorCommand('dakara-transformer.uniqueLines', textEditor => {
+        transforms.uniqueLines(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
-    
-    disposable = vscode.commands.registerCommand('dakara-transformer.countUniqueLinesNewDocument', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.countUniqueLinesToNewDocument(textEditor, selections);
-    });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.sortByLineLength', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.sortLinesByLength(textEditor, selections);
+    registerEditorCommand('dakara-transformer.uniqueLinesNewDocument', textEditor => {
+        transforms.uniqueLinesToNewDocument(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.trimLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.trimLines(textEditor, selections);
+    registerEditorCommand('dakara-transformer.countUniqueLinesNewDocument', textEditor => {
+        transforms.countUniqueLinesToNewDocument(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable)
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.trimSelections', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.trimSelections(textEditor, selections);
+    registerEditorCommand('dakara-transformer.sortByLineLength', textEditor => {
+        transforms.sortLinesByLength(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable)
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.randomLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selection = textEditor.selection;
-        transforms.randomizeLines(textEditor, selection);
+    registerEditorCommand('dakara-transformer.trimLines', textEditor => {
+        transforms.trimLines(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable)
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.randomSelections', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.randomizeSelections(textEditor, selections);
+    registerEditorCommand('dakara-transformer.trimSelections', textEditor => {
+        transforms.trimSelections(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable)
-    
-    disposable = vscode.commands.registerCommand('dakara-transformer.filter', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selection = textEditor.selection;
-        transforms.filterLines(textEditor, selection)
+
+    registerEditorCommand('dakara-transformer.randomLines', textEditor => {
+        transforms.randomizeLines(textEditor, textEditor.selection);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.filterAsNewDocument', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selection = textEditor.selection;
-        transforms.filterLinesWithContextToNewDocument(textEditor, selection)
+    registerEditorCommand('dakara-transformer.randomSelections', textEditor => {
+        transforms.randomizeSelections(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-internal.command', onCommand => onCommand());
-    context.subscriptions.push(disposable);
-
-    disposable = vscode.commands.registerCommand('dakara-transformer.alignCursor', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.alignToCursor(textEditor, selections);
+    registerEditorCommand('dakara-transformer.filter', textEditor => {
+        transforms.filterLines(textEditor, textEditor.selection);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.alignCSV', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.alignCSV(textEditor, selections);
+    registerEditorCommand('dakara-transformer.filterAsNewDocument', textEditor => {
+        transforms.filterLinesWithContextToNewDocument(textEditor, textEditor.selection);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.compactCSV', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        const selections = textEditor.selections;
-        transforms.compactCSV(textEditor, selections);
+    registerCommand('dakara-internal.command', onCommand => onCommand());
+
+    registerEditorCommand('dakara-transformer.alignCursor', textEditor => {
+        transforms.alignToCursor(textEditor, textEditor.selections);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.commands', () => {
+    registerEditorCommand('dakara-transformer.alignCSV', textEditor => {
+        transforms.alignCSV(textEditor, textEditor.selections);
+    });
+
+    registerEditorCommand('dakara-transformer.compactCSV', textEditor => {
+        transforms.compactCSV(textEditor, textEditor.selections);
+    });
+
+    registerCommand('dakara-transformer.commands', () => {
         const textEditor = vscode.window.activeTextEditor;
         const commands = vscode.commands.getCommands().then(commandList => {
             const content = commandList.reduce((prev, curr) => prev + '\n' + curr);
             return View.openShowDocument('untitled:commands.txt', content);
         })
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.copyToNewDocument', () => {
-        const textEditor = vscode.window.activeTextEditor;
+    registerEditorCommand('dakara-transformer.copyToNewDocument', textEditor => {
         transforms.copyToNewDocument(textEditor);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.selectLines', () => {
-        const textEditor = vscode.window.activeTextEditor;
+    registerEditorCommand('dakara-transformer.selectLines', textEditor => {
         transforms.selectLines(textEditor);
     });
-    context.subscriptions.push(disposable);
 
     Application.registerCommand(context, 'dakara-transformer.selectHighlights', () => {
         transforms.selectHighlights();
     });
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.linesAsJSON', () => {
-        const textEditor = vscode.window.activeTextEditor;
+    registerEditorCommand('dakara-transformer.linesAsJSON', textEditor => {
         transforms.linesAsJSON(textEditor);
     });
-    context.subscriptions.push(disposable);
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.selectionAsJSON', () => {
-        const textEditor = vscode.window.activeTextEditor;
+    registerEditorCommand('dakara-transformer.selectionAsJSON', textEditor => {
         transforms.selectionAsJSON(textEditor);
     });
-    context.subscriptions.push(disposable);
 
     Application.registerCommand(context, 'dakara-transformer.JsonAsText', () => {
         const textEditor = vscode.window.activeTextEditor;
         transforms.jsonStringAsText(textEditor);
     });
 
-    disposable = vscode.commands.registerCommand('dakara-transformer.escapes', () => {
-        const textEditor = vscode.window.activeTextEditor;
-        transforms.escapes(textEditor)
+    registerEditorCommand('dakara-transformer.escapes', textEditor => {
+        transforms.escapes(textEditor);
     });
-    context.subscriptions.push(disposable);
 
     Application.registerCommand(context, 'dakara-transformer.joinLines', () => {
         const textEditor = vscode.window.activeTextEditor;
@@ -241,8 +181,27 @@ export function activate(context: vscode.ExtensionContext) {
         transforms.normalizeDiacriticalMarks(textEditor);
     });
 
+    registerCommand('dakara-transformer.addChineseEnglishSpacing', () => {
+        return textCommands.addChineseEnglishSpacing(vscode.window.activeTextEditor);
+    });
 
+    registerCommand('dakara-transformer.addChineseEnglishSpacingInDocument', () => {
+        return textCommands.addChineseEnglishSpacingInDocument(vscode.window.activeTextEditor);
+    });
+
+    registerCommand('dakara-transformer.convertCurlToCode', () => {
+        return textCommands.convertCurlToCode(vscode.window.activeTextEditor);
+    });
+
+    registerCommand('dakara-transformer.encodingTools', () => {
+        return conversionCommands.encodingTools(vscode.window.activeTextEditor);
+    });
+
+    registerCommand('dakara-transformer.convertDataFormat', () => {
+        return conversionCommands.convertDataFormat(vscode.window.activeTextEditor);
+    });
 }
+
 
 export function deactivate() {
 }

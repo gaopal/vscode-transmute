@@ -1,6 +1,12 @@
 .vscode/**
 .vscode-test/**
 out/test/**
+out/feature-deps/**
+out/npm-cache/**
+out/refactor-baseline/**
+out/refactor-benchmark.json
+out/package-build/**
+out/vscode-test/**
 test/**
 src/**
 **/*.map

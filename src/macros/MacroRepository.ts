@@ -1,69 +1,70 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs'
+import * as vscode from "vscode";
+import * as fs from "fs";
 
 export interface MacroScript {
-    name: string
-    content: string
+  name: string;
+  content: string;
 }
 
 interface MacroStorage {
-    macros: MacroScript[]
+  macros: MacroScript[];
 }
 
-let macroStore:MacroStorage = {macros:[]}
+let macroStore: MacroStorage = { macros: [] };
 
 function resolveMacroFileLocation() {
-    const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath
-    return workspacePath + '/.vscode/macros.json'
+  const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+  return workspacePath + "/.vscode/macros.json";
 }
 
-function loadMacros():Promise<MacroStorage> {
-    return new Promise(resolve => {
-        const filename = resolveMacroFileLocation()
-        fs.readFile(filename, 'utf8', function(err, data) {
-            if (err) resolve({macros:[]})
-            else {
-                macroStore = JSON.parse(data) as MacroStorage
-                resolve(macroStore)
-            }
-        });
-    })
+function loadMacros(): Promise<MacroStorage> {
+  return new Promise((resolve) => {
+    const filename = resolveMacroFileLocation();
+    fs.readFile(filename, "utf8", function (err, data) {
+      if (err) resolve({ macros: [] });
+      else {
+        macroStore = JSON.parse(data) as MacroStorage;
+        resolve(macroStore);
+      }
+    });
+  });
 }
 
-function saveMacros(macros:MacroStorage):Promise<Error> {
-    return new Promise(resolve => {
-        const filename = resolveMacroFileLocation()
-        fs.writeFile(filename, JSON.stringify(macros), error => {
-            if (error) resolve(error)
-        })
-    })
+function saveMacros(macros: MacroStorage): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const filename = resolveMacroFileLocation();
+    fs.writeFile(filename, JSON.stringify(macros), (error) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
 }
 
 export async function getMacroNames() {
-    const macros = await loadMacros()
-    return macros.macros.map(macro => macro.name)
+  const macros = await loadMacros();
+  return macros.macros.map((macro) => macro.name);
 }
 
-export async function fetchMacro(name:string) {
-    const macros = await loadMacros()
-    return macros.macros.find(macro => macro.name === name)
+export async function fetchMacro(name: string) {
+  const macros = await loadMacros();
+  return macros.macros.find((macro) => macro.name === name);
 }
 
-export function saveMacro(macroName:string, content:string) {
-    const indexOfExisting = macroStore.macros.findIndex(macroScript => macroScript.name === macroName)
-    if (indexOfExisting != -1) {
-        // remove old version
-        macroStore.macros.splice(indexOfExisting, 1)
-    }
-    macroStore.macros.push({name:macroName, content})
-    return saveMacros(macroStore)
+export function saveMacro(macroName: string, content: string) {
+  const indexOfExisting = macroStore.macros.findIndex((macroScript) => macroScript.name === macroName);
+  if (indexOfExisting != -1) {
+    // remove old version
+    macroStore.macros.splice(indexOfExisting, 1);
+  }
+  macroStore.macros.push({ name: macroName, content });
+  return saveMacros(macroStore);
 }
 
-export function deleteMacro(macroName:string) {
-    const indexOfExisting = macroStore.macros.findIndex(macroScript => macroScript.name === macroName)
-    if (indexOfExisting != -1) {
-        // remove old version
-        macroStore.macros.splice(indexOfExisting, 1)
-    }
-    return saveMacros(macroStore)
+export function deleteMacro(macroName: string) {
+  const indexOfExisting = macroStore.macros.findIndex((macroScript) => macroScript.name === macroName);
+  if (indexOfExisting != -1) {
+    // remove old version
+    macroStore.macros.splice(indexOfExisting, 1);
+  }
+  return saveMacros(macroStore);
 }

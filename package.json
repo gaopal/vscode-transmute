@@ -2,7 +2,7 @@
     "name": "transformer",
     "displayName": "Transformer",
     "description": "Filter, Sort, Unique, Reverse, Align, CSV, Line Selection and more text Transformations",
-    "version": "1.12.1",
+    "version": "1.13.0",
     "icon": "transformer-icon.png",
     "repository": {
         "type": "git",
@@ -53,7 +53,12 @@
         "onCommand:dakara-transformer.trimLines",
         "onCommand:dakara-transformer.trimSelections",
         "onCommand:dakara-transformer.uniqueLines",
-        "onCommand:dakara-transformer.uniqueLinesNewDocument"
+        "onCommand:dakara-transformer.uniqueLinesNewDocument",
+        "onCommand:dakara-transformer.addChineseEnglishSpacing",
+        "onCommand:dakara-transformer.addChineseEnglishSpacingInDocument",
+        "onCommand:dakara-transformer.convertCurlToCode",
+        "onCommand:dakara-transformer.encodingTools",
+        "onCommand:dakara-transformer.convertDataFormat"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -222,6 +227,31 @@
                 "command": "dakara-transformer.normalizeDiacriticalMarks",
                 "title": "Normalize Diacritical Marks (remove accents)",
                 "category": "Transform"
+            },
+            {
+              "command": "dakara-transformer.addChineseEnglishSpacing",
+              "title": "Add Chinese-English Spacing",
+              "category": "Transform"
+            },
+            {
+              "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
+              "title": "Add Chinese-English Spacing in Document",
+              "category": "Transform"
+            },
+            {
+              "command": "dakara-transformer.convertCurlToCode",
+              "title": "Convert cURL to Code...",
+              "category": "Transform"
+            },
+            {
+              "command": "dakara-transformer.encodingTools",
+              "title": "Encoding / Crypto Tools...",
+              "category": "Transform"
+            },
+            {
+              "command": "dakara-transformer.convertDataFormat",
+              "title": "Convert Data Format...",
+              "category": "Transform"
             }
         ],
         "menus": {
@@ -257,7 +287,11 @@
         "compile": "tsc -watch -p ./",
         "compile_common": "tsc -watch -p ../vscode-extension-common",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
+        "test": "node ./node_modules/vscode/bin/test",
+        "test:refactor": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs",
+        "test:features": "node --test --test-isolation=none test/features.test.cjs",
+        "test:all": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs test/features.test.cjs test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs",
+        "test:tools": "node --test --test-isolation=none test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs"
     },
     "devDependencies": {
         "@types/node": "^14.0.27",
@@ -267,6 +301,15 @@
     "dependencies": {
         "md5": "2.3.0",
         "split-string": "6.1.0",
-        "vscode-extension-common": "file:../vscode-extension-common"
+        "vscode-extension-common": "file:../vscode-extension-common",
+        "curl-to-postmanv2": "1.8.7",
+        "postman-code-generators": "1.9.0",
+        "postman-collection": "4.0.0",
+        "yaml": "2.9.1",
+        "fast-xml-parser": "4.5.7",
+        "@iarna/toml": "2.2.5",
+        "ini": "3.0.1",
+        "dot-properties": "1.1.2",
+        "html-entities": "2.6.0"
     }
 }
