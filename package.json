@@ -1,315 +1,481 @@
 {
-    "name": "transformer",
-    "displayName": "Transformer",
-    "description": "Filter, Sort, Unique, Reverse, Align, CSV, Line Selection and more text Transformations",
-    "version": "1.13.0",
-    "icon": "transformer-icon.png",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dakaraphi/vscode-extension-transformer"
-    },
-    "publisher": "dakara",
-    "engines": {
-        "vscode": "^1.58.0"
-    },
-    "categories": [
-        "Other"
+  "name": "transformer",
+  "displayName": "Transformer",
+  "description": "Filter, Sort, Unique, Reverse, Align, CSV, Line Selection and more text Transformations",
+  "version": "1.13.1",
+  "icon": "transformer-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dakaraphi/vscode-extension-transformer"
+  },
+  "publisher": "gaopal",
+  "engines": {
+    "vscode": "^1.58.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:dakara-internal.command",
+    "onCommand:dakara-transformer.JsonAsText",
+    "onCommand:dakara-transformer.alignCSV",
+    "onCommand:dakara-transformer.alignCursor",
+    "onCommand:dakara-transformer.commands",
+    "onCommand:dakara-transformer.compactCSV",
+    "onCommand:dakara-transformer.copyToNewDocument",
+    "onCommand:dakara-transformer.countUniqueLinesNewDocument",
+    "onCommand:dakara-transformer.escapes",
+    "onCommand:dakara-transformer.filter",
+    "onCommand:dakara-transformer.filterAsNewDocument",
+    "onCommand:dakara-transformer.joinLines",
+    "onCommand:dakara-transformer.linesAsJSON",
+    "onCommand:dakara-transformer.macroCreate",
+    "onCommand:dakara-transformer.macroDelete",
+    "onCommand:dakara-transformer.macroEdit",
+    "onCommand:dakara-transformer.macroRepeat",
+    "onCommand:dakara-transformer.macroRun",
+    "onCommand:dakara-transformer.normalizeDiacriticalMarks",
+    "onCommand:dakara-transformer.randomLines",
+    "onCommand:dakara-transformer.randomSelections",
+    "onCommand:dakara-transformer.reverseLines",
+    "onCommand:dakara-transformer.reverseSelections",
+    "onCommand:dakara-transformer.rotateBackwardSelections",
+    "onCommand:dakara-transformer.rotateForwardSelections",
+    "onCommand:dakara-transformer.selectHighlights",
+    "onCommand:dakara-transformer.selectLines",
+    "onCommand:dakara-transformer.selectionAsJSON",
+    "onCommand:dakara-transformer.sortByLineLength",
+    "onCommand:dakara-transformer.sortLines",
+    "onCommand:dakara-transformer.sortSelections",
+    "onCommand:dakara-transformer.splitLines",
+    "onCommand:dakara-transformer.splitLinesBeforeDelimiter",
+    "onCommand:dakara-transformer.splitLinesAfterDelimiter",
+    "onCommand:dakara-transformer.trimLines",
+    "onCommand:dakara-transformer.trimSelections",
+    "onCommand:dakara-transformer.uniqueLines",
+    "onCommand:dakara-transformer.uniqueLinesNewDocument",
+    "onCommand:dakara-transformer.addChineseEnglishSpacing",
+    "onCommand:dakara-transformer.addChineseEnglishSpacingInDocument",
+    "onCommand:dakara-transformer.convertCurlToCode",
+    "onCommand:dakara-transformer.encodingTools",
+    "onCommand:dakara-transformer.convertDataFormat",
+    "onCommand:dakara-transformer.openMenu"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dakara-transformer.openMenu",
+        "title": "Open Menu...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.sortLines",
+        "title": "Sort Lines",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.sortSelections",
+        "title": "Sort Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.filterAsNewDocument",
+        "title": "Filter Lines As New Document...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-internal.command",
+        "title": "internal use only",
+        "category": "Transform-Internal"
+      },
+      {
+        "command": "dakara-transformer.filter",
+        "title": "Filter Lines...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.reverseLines",
+        "title": "Reverse Lines",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.reverseSelections",
+        "title": "Reverse Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.alignCursor",
+        "title": "Align To Cursor",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.alignCSV",
+        "title": "Align CSV",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.compactCSV",
+        "title": "Compact CSV",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.commands",
+        "title": "List All Commands",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.uniqueLines",
+        "title": "Unique Lines",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.uniqueLinesNewDocument",
+        "title": "Unique Lines As New Document",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.sortByLineLength",
+        "title": "Sort Lines By Length",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.countUniqueLinesNewDocument",
+        "title": "Count Duplicate Lines As New Document",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.copyToNewDocument",
+        "title": "Copy To New Document",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.selectLines",
+        "title": "Select Full Lines (of all current selections)",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.selectHighlights",
+        "title": "Select Highlights (make selections of all highlighted text)",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.linesAsJSON",
+        "title": "Lines As JSON String Array",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.selectionAsJSON",
+        "title": "Selection As JSON String",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.JsonAsText",
+        "title": "JSON String As Text",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.trimLines",
+        "title": "Trim Lines",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.trimSelections",
+        "title": "Trim Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.escapes",
+        "title": "Encode / Decode ...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.randomLines",
+        "title": "Randomize Lines",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.randomSelections",
+        "title": "Randomize Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.joinLines",
+        "title": "Join Lines...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.splitLines",
+        "title": "Split Lines...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.splitLinesBeforeDelimiter",
+        "title": "Split Lines Before...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.splitLinesAfterDelimiter",
+        "title": "Split Lines After...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.rotateForwardSelections",
+        "title": "Rotate Forward Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.rotateBackwardSelections",
+        "title": "Rotate Backward Selections",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.normalizeDiacriticalMarks",
+        "title": "Normalize Diacritical Marks (remove accents)",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.addChineseEnglishSpacing",
+        "title": "Add Chinese-English Spacing",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
+        "title": "Add Chinese-English Spacing in Document",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.convertCurlToCode",
+        "title": "Convert cURL to Code...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.encodingTools",
+        "title": "Encoding / Crypto Tools...",
+        "category": "Transform"
+      },
+      {
+        "command": "dakara-transformer.convertDataFormat",
+        "title": "Convert Data Format...",
+        "category": "Transform"
+      }
     ],
-    "activationEvents": [
-        "onCommand:dakara-internal.command",
-        "onCommand:dakara-transformer.JsonAsText",
-        "onCommand:dakara-transformer.alignCSV",
-        "onCommand:dakara-transformer.alignCursor",
-        "onCommand:dakara-transformer.commands",
-        "onCommand:dakara-transformer.compactCSV",
-        "onCommand:dakara-transformer.copyToNewDocument",
-        "onCommand:dakara-transformer.countUniqueLinesNewDocument",
-        "onCommand:dakara-transformer.escapes",
-        "onCommand:dakara-transformer.filter",
-        "onCommand:dakara-transformer.filterAsNewDocument",
-        "onCommand:dakara-transformer.joinLines",
-        "onCommand:dakara-transformer.linesAsJSON",
-        "onCommand:dakara-transformer.macroCreate",
-        "onCommand:dakara-transformer.macroDelete",
-        "onCommand:dakara-transformer.macroEdit",
-        "onCommand:dakara-transformer.macroRepeat",
-        "onCommand:dakara-transformer.macroRun",
-        "onCommand:dakara-transformer.normalizeDiacriticalMarks",
-        "onCommand:dakara-transformer.randomLines",
-        "onCommand:dakara-transformer.randomSelections",
-        "onCommand:dakara-transformer.reverseLines",
-        "onCommand:dakara-transformer.reverseSelections",
-        "onCommand:dakara-transformer.rotateBackwardSelections",
-        "onCommand:dakara-transformer.rotateForwardSelections",
-        "onCommand:dakara-transformer.selectHighlights",
-        "onCommand:dakara-transformer.selectLines",
-        "onCommand:dakara-transformer.selectionAsJSON",
-        "onCommand:dakara-transformer.sortByLineLength",
-        "onCommand:dakara-transformer.sortLines",
-        "onCommand:dakara-transformer.sortSelections",
-        "onCommand:dakara-transformer.splitLines",
-        "onCommand:dakara-transformer.splitLinesBeforeDelimiter",
-        "onCommand:dakara-transformer.splitLinesAfterDelimiter",
-        "onCommand:dakara-transformer.trimLines",
-        "onCommand:dakara-transformer.trimSelections",
-        "onCommand:dakara-transformer.uniqueLines",
-        "onCommand:dakara-transformer.uniqueLinesNewDocument",
-        "onCommand:dakara-transformer.addChineseEnglishSpacing",
-        "onCommand:dakara-transformer.addChineseEnglishSpacingInDocument",
-        "onCommand:dakara-transformer.convertCurlToCode",
-        "onCommand:dakara-transformer.encodingTools",
-        "onCommand:dakara-transformer.convertDataFormat"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "dakara-transformer.sortLines",
-                "title": "Sort Lines",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.sortSelections",
-                "title": "Sort Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.filterAsNewDocument",
-                "title": "Filter Lines As New Document...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-internal.command",
-                "title": "internal use only",
-                "category": "Transform-Internal"
-            },
-            {
-                "command": "dakara-transformer.filter",
-                "title": "Filter Lines...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.reverseLines",
-                "title": "Reverse Lines",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.reverseSelections",
-                "title": "Reverse Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.alignCursor",
-                "title": "Align To Cursor",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.alignCSV",
-                "title": "Align CSV",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.compactCSV",
-                "title": "Compact CSV",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.commands",
-                "title": "List All Commands",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.uniqueLines",
-                "title": "Unique Lines",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.uniqueLinesNewDocument",
-                "title": "Unique Lines As New Document",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.sortByLineLength",
-                "title": "Sort Lines By Length",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.countUniqueLinesNewDocument",
-                "title": "Count Duplicate Lines As New Document",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.copyToNewDocument",
-                "title": "Copy To New Document",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.selectLines",
-                "title": "Select Full Lines (of all current selections)",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.selectHighlights",
-                "title": "Select Highlights (make selections of all highlighted text)",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.linesAsJSON",
-                "title": "Lines As JSON String Array",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.selectionAsJSON",
-                "title": "Selection As JSON String",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.JsonAsText",
-                "title": "JSON String As Text",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.trimLines",
-                "title": "Trim Lines",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.trimSelections",
-                "title": "Trim Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.escapes",
-                "title": "Encode / Decode ...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.randomLines",
-                "title": "Randomize Lines",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.randomSelections",
-                "title": "Randomize Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.joinLines",
-                "title": "Join Lines...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.splitLines",
-                "title": "Split Lines...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.splitLinesBeforeDelimiter",
-                "title": "Split Lines Before...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.splitLinesAfterDelimiter",
-                "title": "Split Lines After...",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.rotateForwardSelections",
-                "title": "Rotate Forward Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.rotateBackwardSelections",
-                "title": "Rotate Backward Selections",
-                "category": "Transform"
-            },
-            {
-                "command": "dakara-transformer.normalizeDiacriticalMarks",
-                "title": "Normalize Diacritical Marks (remove accents)",
-                "category": "Transform"
-            },
-            {
-              "command": "dakara-transformer.addChineseEnglishSpacing",
-              "title": "Add Chinese-English Spacing",
-              "category": "Transform"
-            },
-            {
-              "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
-              "title": "Add Chinese-English Spacing in Document",
-              "category": "Transform"
-            },
-            {
-              "command": "dakara-transformer.convertCurlToCode",
-              "title": "Convert cURL to Code...",
-              "category": "Transform"
-            },
-            {
-              "command": "dakara-transformer.encodingTools",
-              "title": "Encoding / Crypto Tools...",
-              "category": "Transform"
-            },
-            {
-              "command": "dakara-transformer.convertDataFormat",
-              "title": "Convert Data Format...",
-              "category": "Transform"
-            }
-        ],
-        "menus": {
-            "commandPalette": [
-                {
-                    "command": "dakara-internal.command",
-                    "when": "false"
-                }
-            ]
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "dakara-transformer.sortLines",
+          "when": "false"
         },
-        "languages": [
-            {
-                "id": "macro",
-                "aliases": [
-                    "macro"
-                ],
-                "extensions": [
-                    ".macro"
-                ],
-                "configuration": "./language-configuration.json"
-            }
+        {
+          "command": "dakara-transformer.sortSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.filterAsNewDocument",
+          "when": "false"
+        },
+        {
+          "command": "dakara-internal.command",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.filter",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.reverseLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.reverseSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.alignCursor",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.alignCSV",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.compactCSV",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.commands",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.uniqueLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.uniqueLinesNewDocument",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.sortByLineLength",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.countUniqueLinesNewDocument",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.copyToNewDocument",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.selectLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.selectHighlights",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.linesAsJSON",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.selectionAsJSON",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.JsonAsText",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.trimLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.trimSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.escapes",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.randomLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.randomSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.joinLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.splitLines",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.splitLinesBeforeDelimiter",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.splitLinesAfterDelimiter",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.rotateForwardSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.rotateBackwardSelections",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.normalizeDiacriticalMarks",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.addChineseEnglishSpacing",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.convertCurlToCode",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.encodingTools",
+          "when": "false"
+        },
+        {
+          "command": "dakara-transformer.convertDataFormat",
+          "when": "false"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "macro",
+        "aliases": [
+          "macro"
         ],
-        "grammars": [
-            {
-                "language": "macro",
-                "scopeName": "source.macro",
-                "path": "./macro.tmLanguage"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "compile_common": "tsc -watch -p ../vscode-extension-common",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test",
-        "test:refactor": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs",
-        "test:features": "node --test --test-isolation=none test/features.test.cjs",
-        "test:all": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs test/features.test.cjs test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs",
-        "test:tools": "node --test --test-isolation=none test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs"
-    },
-    "devDependencies": {
-        "@types/node": "^14.0.27",
-        "typescript": "^3.9.7",
-        "vscode": "^1.1.37"
-    },
-    "dependencies": {
-        "md5": "2.3.0",
-        "split-string": "6.1.0",
-        "vscode-extension-common": "file:../vscode-extension-common",
-        "curl-to-postmanv2": "1.8.7",
-        "postman-code-generators": "1.9.0",
-        "postman-collection": "4.0.0",
-        "yaml": "2.9.1",
-        "fast-xml-parser": "4.5.7",
-        "@iarna/toml": "2.2.5",
-        "ini": "3.0.1",
-        "dot-properties": "1.1.2",
-        "html-entities": "2.6.0"
-    }
+        "extensions": [
+          ".macro"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "macro",
+        "scopeName": "source.macro",
+        "path": "./macro.tmLanguage"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit -p ./",
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "compile_common": "tsc -watch -p ../vscode-extension-common",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
+    "test:refactor": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs",
+    "test:features": "node --test --test-isolation=none test/features.test.cjs",
+    "test:all": "node --experimental-vm-modules --test --test-isolation=none test/refactor.test.cjs test/features.test.cjs test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs test/scope-menu.test.cjs",
+    "test:tools": "node --test --test-isolation=none test/encoding.test.cjs test/formats.test.cjs test/conversion-commands.test.cjs"
+  },
+  "devDependencies": {
+    "@types/vscode": "1.58.0",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "8.10.0",
+    "prettier": "3.6.2",
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.7",
+    "vscode": "^1.1.37"
+  },
+  "dependencies": {
+    "md5": "2.3.0",
+    "split-string": "6.1.0",
+    "vscode-extension-common": "file:../vscode-extension-common",
+    "curl-to-postmanv2": "1.8.7",
+    "postman-code-generators": "1.9.0",
+    "postman-collection": "4.0.0",
+    "yaml": "2.9.1",
+    "fast-xml-parser": "4.5.7",
+    "@iarna/toml": "2.2.5",
+    "ini": "3.0.1",
+    "dot-properties": "1.1.2",
+    "html-entities": "2.6.0",
+    "natural-orderby": "2.0.3"
+  }
 }

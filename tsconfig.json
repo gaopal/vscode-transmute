@@ -1,12 +1,18 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2017",
-        "outDir": "out",
-        "sourceMap": true,
-        "baseUrl": "",
-        "paths": {
-            "vscode": ["node_modules/vscode"]
-        }
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "rootDir": "src",
+    "outDir": "out",
+    "sourceMap": true,
+    "noEmitOnError": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "vscode"],
+    "baseUrl": "",
+    "paths": {
+      "vscode": ["node_modules/@types/vscode"]
     }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "out", "test"]
 }

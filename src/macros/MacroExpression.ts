@@ -8,11 +8,9 @@ export enum CommandType {
   EXTENDED_COMMAND,
 }
 
-export interface MacroCommand {
-  type: CommandType;
-  command: string;
-  parameters?: any[];
-}
+export type MacroCommand =
+  | { type: CommandType.VSCODE_COMMAND; command: string; parameters?: unknown[] }
+  | { type: CommandType.EXTENDED_COMMAND; command: string; parameters: [string] };
 
 export interface MacroScriptExpression {
   commands: MacroCommand[];
@@ -57,30 +55,25 @@ export async function registerCompletionProvider() {
   const extendedCommands = ExtendedCommands.getCommands();
 
   vscode.languages.registerCompletionItemProvider("macro", {
-    provideCompletionItems(
-      document: vscode.TextDocument,
-      position: vscode.Position,
-      token: vscode.CancellationToken,
-      context: vscode.CompletionContext,
-    ) {
+    provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
       if (position.character !== 1) return;
 
       const range = new vscode.Range(new vscode.Position(position.line, 0), new vscode.Position(position.line, 1));
       const character = document.getText(range);
       if (character === "c")
         return cursorCommands.map(
-          (prompt) => new vscode.CompletionItem("c " + prompt, vscode.CompletionItemKind.Variable),
+          (prompt) => new vscode.CompletionItem("c " + prompt, vscode.CompletionItemKind.Variable)
         );
       if (character === "s")
         return selectionCommands.map(
-          (prompt) => new vscode.CompletionItem("s " + prompt, vscode.CompletionItemKind.Variable),
+          (prompt) => new vscode.CompletionItem("s " + prompt, vscode.CompletionItemKind.Variable)
         );
       if (character === "v")
         return commands.map((prompt) => new vscode.CompletionItem("v " + prompt, vscode.CompletionItemKind.Variable));
       if (character === "x")
         return extendedCommands.map(
           (extendedCommand) =>
-            new vscode.CompletionItem("x " + extendedCommand.name, vscode.CompletionItemKind.Variable),
+            new vscode.CompletionItem("x " + extendedCommand.name, vscode.CompletionItemKind.Variable)
         );
     },
   });

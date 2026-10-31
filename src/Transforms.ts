@@ -49,7 +49,7 @@ export function randomizeSelections(textEditor: vscode.TextEditor, ranges: Array
   Modify.replaceRanges(textEditor, ranges, randomizedRanges);
 }
 
-function randomize(items: Array<any>) {
+function randomize<T>(items: T[]): T[] {
   for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [items[i], items[j]] = [items[j], items[i]];
@@ -78,7 +78,7 @@ export function trimLines(textEditor: vscode.TextEditor, ranges: Array<vscode.Ra
 }
 
 export function trimSelections(textEditor: vscode.TextEditor, ranges: Array<vscode.Range>) {
-  let trimmedResult = [];
+  const trimmedResult = [];
   for (const range of ranges) {
     trimmedResult.push(textEditor.document.getText(range).trim());
   }
@@ -166,10 +166,27 @@ function isFilterContextOptionSet(options: FilterContextOptions) {
   return !isNaN(options.sectionByLevel) || !isNaN(options.surroundingLines);
 }
 
-export function filterLinesWithContextToNewDocument(textEditor: vscode.TextEditor, selection: vscode.Selection) {
-  const selectedText = Lines.textOfLineSelectionOrWordAtCursor(textEditor.document, selection);
-  // If we have multiple lines selected, use that as source to filter, else the entire document
-  const range = selection.isSingleLine ? Region.makeRangeDocument(textEditor.document) : selection;
+export function filterLinesWithContextToNewDocument(
+  textEditor: vscode.TextEditor,
+  selection: vscode.Selection,
+  scopes?: vscode.Range[]
+) {
+  const selectedText = scopes ? "" : Lines.textOfLineSelectionOrWordAtCursor(textEditor.document, selection);
+  const range = scopes ? scopes[0] : selection.isSingleLine ? Region.makeRangeDocument(textEditor.document) : selection;
+  const version = textEditor.document.version;
+  const scopedLines =
+    scopes &&
+    scopes.map((scope) => {
+      const rows: vscode.TextLine[] = [];
+      for (let index = scope.start.line; index <= scope.end.line; index++) {
+        if (index === scope.end.line && scope.end.character === 0 && index !== scope.start.line) break;
+        const line = textEditor.document.lineAt(index);
+        const start = index === scope.start.line ? scope.start.character : 0;
+        const end = index === scope.end.line ? scope.end.character : line.text.length;
+        rows.push({ ...line, lineNumber: index, text: line.text.slice(start, end) });
+      }
+      return rows;
+    });
 
   const editorName = originName(textEditor);
 
@@ -190,36 +207,63 @@ export function filterLinesWithContextToNewDocument(textEditor: vscode.TextEdito
     input: { prompt: "[# parent levels] [optional regex]", placeHolder: "2 abc.*" },
   });
   View.promptOptions([regexOption, surroundOption, levelsOption], (item, action) => {
-    if (View.QuickPickActionType.INPUT == action) {
-      // don't process realtime input changes on large documents
-      if (range.end.line - range.start.line > 10000) return;
-    }
-    const surrounding = parseNumberAndRegex(surroundOption.value);
-    const levels = parseNumberAndRegex(levelsOption.value);
-    const contextOptions: FilterContextOptions = {
-      surroundingLines: surrounding.number,
-      surroundingRegex: surrounding.regex,
-      sectionByLevel: levels.number,
-      sectionByLevelRegex: levels.regex,
-    };
-
-    const fnFilter = View.makeFilterFunction(regexOption.value);
-    let filteredLines = Lines.filterLines(textEditor.document, range, fnFilter);
-    if (isFilterContextOptionSet(contextOptions)) {
-      const contextLines = filteredLines
-        .map((line) => addContextLines(textEditor, line, contextOptions))
-        .reduce((allLines, lines) => {
-          for (const line of lines) allLines.push(line);
-          return allLines;
-        }, [] as vscode.TextLine[]);
-      const linesByNumber = new Map<number, vscode.TextLine>();
-      for (const line of contextLines) {
-        if (!linesByNumber.has(line.lineNumber)) linesByNumber.set(line.lineNumber, line);
+    try {
+      if (scopes && textEditor.document.version !== version)
+        throw new Error("The document changed; run this command again");
+      if (View.QuickPickActionType.INPUT == action) {
+        // don't process realtime input changes on large documents
+        if (
+          scopes
+            ? scopes.reduce((count, scope) => count + scope.end.line - scope.start.line, 0) > 10000
+            : range.end.line - range.start.line > 10000
+        )
+          return;
       }
-      filteredLines = Array.from(linesByNumber.values()).sort((l1, l2) => l1.lineNumber - l2.lineNumber);
-    }
+      const surrounding = parseNumberAndRegex(surroundOption.value);
+      const levels = parseNumberAndRegex(levelsOption.value);
+      const contextOptions: FilterContextOptions = {
+        surroundingLines: surrounding.number,
+        surroundingRegex: surrounding.regex,
+        sectionByLevel: levels.number,
+        sectionByLevelRegex: levels.regex,
+      };
 
-    openShowDocumentWithLines(editorName, filteredLines);
+      const fnFilter = View.makeFilterFunction(regexOption.value);
+      if (scopedLines) {
+        const filtered = scopedLines.reduce((all, rows) => {
+          const matches = rows.filter((line) => fnFilter(line.text));
+          const numbers = new Set(matches.map((line) => line.lineNumber));
+          if (isFilterContextOptionSet(contextOptions)) {
+            for (const match of matches) {
+              for (const line of addContextLines(textEditor, match, contextOptions)) numbers.add(line.lineNumber);
+            }
+          }
+          return all.concat(rows.filter((line) => numbers.has(line.lineNumber)));
+        }, [] as vscode.TextLine[]);
+        openShowDocumentWithLines(editorName, filtered).then(undefined, (error) =>
+          vscode.window.showErrorMessage("Unable to filter text: " + error.message)
+        );
+        return;
+      }
+      let filteredLines = Lines.filterLines(textEditor.document, range, fnFilter);
+      if (isFilterContextOptionSet(contextOptions)) {
+        const contextLines = filteredLines
+          .map((line) => addContextLines(textEditor, line, contextOptions))
+          .reduce((allLines, lines) => {
+            for (const line of lines) allLines.push(line);
+            return allLines;
+          }, [] as vscode.TextLine[]);
+        const linesByNumber = new Map<number, vscode.TextLine>();
+        for (const line of contextLines) {
+          if (!linesByNumber.has(line.lineNumber)) linesByNumber.set(line.lineNumber, line);
+        }
+        filteredLines = Array.from(linesByNumber.values()).sort((l1, l2) => l1.lineNumber - l2.lineNumber);
+      }
+
+      openShowDocumentWithLines(editorName, filteredLines);
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to filter text: " + error.message);
+    }
   });
 }
 
@@ -232,7 +276,7 @@ function addContextLines(textEditor: vscode.TextEditor, line: vscode.TextLine, o
       textEditor.document,
       line.lineNumber,
       options.sectionByLevel,
-      tabSize,
+      tabSize
     );
     let lines = Lines.linesFromRange(textEditor.document, range);
     if (options.sectionByLevelRegex) lines = lines.filter((line) => options.sectionByLevelRegex.test(line.text));
@@ -243,7 +287,7 @@ function addContextLines(textEditor: vscode.TextEditor, line: vscode.TextLine, o
     let lines = Lines.collectLines(
       textEditor.document,
       Math.max(0, line.lineNumber - options.surroundingLines),
-      Math.min(textEditor.document.lineCount, line.lineNumber + options.surroundingLines),
+      Math.min(textEditor.document.lineCount, line.lineNumber + options.surroundingLines)
     );
     if (options.surroundingRegex) lines = lines.filter((line) => options.surroundingRegex.test(line.text));
     addedContextLines = addedContextLines.concat(lines);
@@ -259,7 +303,7 @@ function openShowDocumentWithLines(editorName: string, filteredLines: vscode.Tex
   return View.openShowDocument(editorName, content).then((editor) => {
     if (filteredLines.length < 1000) {
       const decorations = filteredLines.map((line, index) =>
-        View.createGutterDecorator(index, ": " + (line.lineNumber + 1), "50px"),
+        View.createGutterDecorator(index, ": " + (line.lineNumber + 1), "50px")
       );
       editor.setDecorations(gutterDecorationType, decorations);
     } else {
@@ -299,7 +343,7 @@ export function alignToCursor(textEditor: vscode.TextEditor, ranges: Array<vscod
 
       editBuilder.replace(
         Region.expandRangeFullLineWidth(textEditor.document, line.range),
-        lineLeftOfCursor + trimmedRight,
+        lineLeftOfCursor + trimmedRight
       );
     });
   });
@@ -307,7 +351,7 @@ export function alignToCursor(textEditor: vscode.TextEditor, ranges: Array<vscod
 
 export async function alignCSV(textEditor: vscode.TextEditor, ranges: Array<vscode.Range>) {
   const userInput = await vscode.window.showInputBox({ prompt: "Specify Delimiter", value: "," });
-  const delimeter = JSON.parse('\"' + userInput + '\"');
+  const delimeter = JSON.parse('"' + userInput + '"');
   const lines = linesFromRangesExpandBlockIfEmpty(textEditor, ranges);
   const linesParts = lines.map((line) => split(line.text, { separator: delimeter, quotes: true }));
   const linePartCount = linesParts[0].length;
@@ -344,7 +388,7 @@ function maxLength(texts: string[][], partIndex: number) {
 export async function compactCSV(textEditor: vscode.TextEditor, ranges: Array<vscode.Range>) {
   const userInput = await vscode.window.showInputBox({ prompt: "Specify Delimiter", value: "," });
 
-  const delimeter = JSON.parse('\"' + userInput + '\"');
+  const delimeter = JSON.parse('"' + userInput + '"');
   const lines = linesFromRangesExpandBlockIfEmpty(textEditor, ranges);
   const linesParts = lines.map((line) => split(line.text, { separator: delimeter, quotes: true }));
   const linePartCount = linesParts[0].length;
@@ -426,7 +470,7 @@ export async function splitLinesAfterDelimiter(textEditor: vscode.TextEditor) {
 export async function rotateForwardSelections(textEditor: vscode.TextEditor) {
   const ranges = textEditor.selections;
   const orderedRanges = Region.makeOrderedRangesByStartPosition(ranges);
-  let shiftedRanges = [...orderedRanges];
+  const shiftedRanges = [...orderedRanges];
   shiftedRanges.unshift(shiftedRanges.pop());
   Modify.replaceRanges(textEditor, orderedRanges, shiftedRanges);
 }
@@ -434,7 +478,7 @@ export async function rotateForwardSelections(textEditor: vscode.TextEditor) {
 export async function rotateBackwardSelections(textEditor: vscode.TextEditor) {
   const ranges = textEditor.selections;
   const orderedRanges = Region.makeOrderedRangesByStartPosition(ranges);
-  let shiftedRanges = [...orderedRanges];
+  const shiftedRanges = [...orderedRanges];
   shiftedRanges.push(shiftedRanges.shift());
   Modify.replaceRanges(textEditor, orderedRanges, shiftedRanges);
 }
@@ -451,7 +495,7 @@ export async function normalizeDiacriticalMarks(textEditor: vscode.TextEditor) {
   Modify.replaceRangesWithText(textEditor, orderedRanges, normalizedText);
 }
 
-function normalizeDiacritical(text: String) {
+function normalizeDiacritical(text: string) {
   return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
@@ -480,7 +524,7 @@ export function escapes(textEditor: vscode.TextEditor) {
 
   View.promptOptions(
     [encodeBase64, decodeBase64, encodeUrlSegment, decodeUrlSegment, encodeFormUrl, decodeFormUrl, encodeMD5],
-    (item, action) => {
+    (item) => {
       if (encodeBase64 === item) {
         Modify.replaceUsingTransform(textEditor, selections, (text) => Buffer.from(text, "binary").toString("base64"));
       } else if (decodeBase64 === item) {
@@ -492,10 +536,10 @@ export function escapes(textEditor: vscode.TextEditor) {
       } else if (decodeUrlSegment === item) {
         Modify.replaceUsingTransform(textEditor, selections, (text) => decodeURIComponent(text));
       } else if (encodeFormUrl === item) {
-        Modify.replaceUsingTransform(textEditor, selections, (text) => encodeURIComponent(text).replace(/\%20/g, "+"));
+        Modify.replaceUsingTransform(textEditor, selections, (text) => encodeURIComponent(text).replace(/%20/g, "+"));
       } else if (decodeFormUrl === item) {
         Modify.replaceUsingTransform(textEditor, selections, (text) => decodeURIComponent(text.replace(/\+/g, "%20")));
       }
-    },
+    }
   );
 }

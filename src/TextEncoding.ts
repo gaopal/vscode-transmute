@@ -33,7 +33,7 @@ export function getTextOperations(): TextOperation[] {
     { id: "base64:bytes", label: "Convert: Base64 to JSON Byte Array" },
     { id: "bytes:base64", label: "Convert: JSON Byte Array to Base64" },
     { id: "bytes:hex", label: "Convert: JSON Byte Array to Hex" },
-    { id: "hex:bytes", label: "Convert: Hex to JSON Byte Array" },
+    { id: "hex:bytes", label: "Convert: Hex to JSON Byte Array" }
   );
   for (const algorithm of ["md5", "sha1", "sha256", "sha512"]) {
     for (const encoding of ["hex", "base64"]) {
@@ -54,7 +54,7 @@ export function getTextOperations(): TextOperation[] {
   }
   operations.push(
     { id: "aes:encrypt", label: "Encrypt: AES-256-GCM", secret: "password", newDocument: true },
-    { id: "aes:decrypt", label: "Decrypt: AES-256-GCM", secret: "password", newDocument: true },
+    { id: "aes:decrypt", label: "Decrypt: AES-256-GCM", secret: "password", newDocument: true }
   );
   return operations;
 }

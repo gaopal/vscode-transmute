@@ -1,12 +1,9 @@
 "use strict";
-import * as path from "path";
 import * as vscode from "vscode";
-import * as edit from "vscode-extension-common";
-import { Region, Lines, Modify, View, Application } from "vscode-extension-common";
+import { Region, View } from "vscode-extension-common";
 import * as MacroRepository from "./MacroRepository";
 import * as MacroExpression from "./MacroExpression";
 import * as ExtendedCommands from "./ExtendedCommands";
-import { linesAsJSON } from "../Transforms";
 
 const DEFAULT_SCRIPT =
   "// - This Feature is BETA, scripts may not work in future versions\n" +
@@ -31,34 +28,34 @@ const codeLensChangeEvent = new vscode.EventEmitter<void>();
 vscode.languages.registerCodeLensProvider(
   { language: "plaintext" },
   {
-    provideCodeLenses: (document, cancel) => {
+    provideCodeLenses: (document) => {
       if (document !== previewDocument) return;
       return [
         View.makeCodeLens("Set current text as starting point for macro test", 0, 0, updatePreviewTextInitialState),
       ];
     },
     onDidChangeCodeLenses: codeLensChangeEvent.event,
-  },
+  }
 );
 vscode.languages.registerCodeLensProvider(
   { language: "macro" },
   {
-    provideCodeLenses: (document, cancel) => {
+    provideCodeLenses: () => {
       if (currentMacroScript.content === currentMacroScriptContentLastSave) return;
 
       const name = currentMacroScript.name ? currentMacroScript.name : "";
       return [View.makeCodeLens("Save Script: " + name, 0, 0, saveScript)];
     },
     onDidChangeCodeLenses: codeLensChangeEvent.event,
-  },
+  }
 );
 
 async function evalFunctionExpression(expression: string) {
   const macroExpression = MacroExpression.parseScript(expression);
   for (const command of macroExpression.commands) {
     if (command.type === MacroExpression.CommandType.VSCODE_COMMAND) {
-      const parameters = [command.command].concat(command.parameters);
-      await vscode.commands.executeCommand.apply(this, parameters);
+      const parameters: unknown[] = [command.command];
+      await vscode.commands.executeCommand.apply(this, parameters.concat(command.parameters));
     }
     if (command.type === MacroExpression.CommandType.EXTENDED_COMMAND) {
       ExtendedCommands.executeCommand(command.command, vscode.window.activeTextEditor, command.parameters[0]);
@@ -143,7 +140,6 @@ async function openMacroEditor() {
   let scriptEditor = await View.openShowDocument("Macro Script Editor.macro", currentMacroScript.content, false, 2);
   scriptDocument = scriptEditor.document;
   const previousFocusColumnNumber = vscode.window.activeTextEditor.viewColumn;
-  const macroScript = scriptEditor.document.getText();
   let previewEditor = await View.openShowDocument("Macro Preview.txt", previewText, false, 3);
   previewDocument = previewEditor.document;
   previewSelections = previewEditor.selections;
@@ -167,13 +163,13 @@ async function openMacroEditor() {
         function (editBuilder) {
           editBuilder.replace(Region.makeRangeDocument(previewEditor.document), previewText);
         },
-        { undoStopAfter: false, undoStopBefore: false },
+        { undoStopAfter: false, undoStopBefore: false }
       );
 
       previewEditor.selections = previewSelections;
       const scriptContentRange = Region.makeRangeFromStartToLine(
         scriptEditor.document,
-        scriptEditor.selection.end.line,
+        scriptEditor.selection.end.line
       );
       const scriptUpToCursor = scriptEditor.document.getText(scriptContentRange);
       await evalFunctionExpressionAsPreview(scriptUpToCursor, previewEditor);

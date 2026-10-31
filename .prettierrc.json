@@ -1,0 +1,16 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "endOfLine": "auto",
+  "proseWrap": "preserve",
+  "overrides": [
+    {
+      "files": "*.cjs",
+      "options": { "semi": false, "singleQuote": true }
+    }
+  ]
+}

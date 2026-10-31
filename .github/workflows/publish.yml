@@ -1,0 +1,52 @@
+name: Publish VS Code extension
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.event_name != 'release' || !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    outputs:
+      vsix-name: ${{ steps.package.outputs.vsix-name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Test, compile and package
+        id: package
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: node scripts/build-release.cjs
+      - name: Upload tested VSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketplace-vsix
+          path: out/release/${{ steps.package.outputs.vsix-name }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download tested VSIX
+        uses: actions/download-artifact@v4
+        with:
+          name: marketplace-vsix
+          path: out/release
+      - name: Publish to Visual Studio Marketplace
+        env:
+          VSIX_PATH: out/release/${{ needs.build.outputs.vsix-name }}
+        run: npx --yes @vscode/vsce@4.1.0 publish --oidc --packagePath "$VSIX_PATH"

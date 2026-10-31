@@ -32,7 +32,7 @@ export async function encryptText(text: string, password: string): Promise<strin
         ciphertext: ciphertext.toString("base64"),
       },
       null,
-      2,
+      2
     );
   } finally {
     key.fill(0);

@@ -1,3 +1,15 @@
+## 1.13.1
+
+- Resolved TypeScript lint errors and warnings and normalized project formatting to two-space indentation
+- Rejected invalid XML numeric character references while preserving valid Unicode and literal entity text in CDATA and comments
+
+- Consolidated the command palette into one `Transform: Open Menu...` entry with grouped functions and nested mode/output choices
+- Unified text scope across transformations: process nonempty selections independently, or the whole document once when nothing is selected
+- Preserved selected characters outside each input, ignored empty cursors mixed with real selections and retained existing command IDs for keybindings
+- Added atomic replacement, cancellation and stale-document checks for line transformations, with a single undo step
+- Unified spacing and encoding aliases, and converted multiple cURL/data selections into separate result documents after validating all inputs
+- Restricted filter context output to input selections and retained explicit modes for reordering selected fragments
+
 ## 1.13.0
 
 - Added local encoding and crypto tools, including UTF-8 conversions, byte arrays, Crockford Base32, hashes, HMAC and password-based AES-256-GCM
@@ -11,13 +23,13 @@
 ## 1.12.1
 
 - Fixed
-  - Changed behavior of open new document to never reuse an untitled document.
+  - Changed behavior of open new document to never reuse an untitled document
 
 ## 1.12.0
 
 - New Features
   - Perform operation on entire line of cursor when there is no selection for convenience
-    - Applies to the following commands:
+    - Applies to the following commands
     - `Split Lines`
     - `Split Lines After...`
     - `Split Lines Before...`
@@ -35,7 +47,7 @@
 ## 1.11.1
 
 - Fixed
-  - `Sort Lines By Length` regression introduced in 1.8.0 broke this command.
+  - `Sort Lines By Length` regression introduced in 1.8.0 broke this command
   - `Filter lines as new document` fixed issue with adding surrounding lines
   - Removed experimental macros
 
@@ -107,7 +119,7 @@
 
 ## 1.3.2
 
-- Added `Lines As JSON` command which Converts each line to a JSON string.  Useful for easily creating snippet bodies from selected text
+- Added `Lines As JSON` command which Converts each line to a JSON string. Useful for easily creating snippet bodies from selected text
 
 ## 1.2.0
 

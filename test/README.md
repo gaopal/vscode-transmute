@@ -21,3 +21,5 @@ Remove-Item Env:REFACTOR_BASELINE
 ```
 
 The optional benchmark checks that outputs match, warms up both versions, then records the median of five alternating runs in `out/refactor-benchmark.json`. It measures production transformation code with editor and parser substitutes, so its timings describe these workloads rather than end-to-end VS Code latency. There is no timing threshold because local execution conditions vary
+
+The scope/menu suite verifies the single visible palette entry, grouped dispatch, compatibility command registration, whole-document fallback, mixed empty cursors, exact partial selections, CRLF preservation, independent multi-selection edits, cancellation, stale edits and atomic failures

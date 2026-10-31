@@ -6,6 +6,10 @@ const properties = require("dot-properties");
 
 export type FormatId = "json" | "yaml" | "xml" | "properties" | "toml" | "ini";
 type DataValue = string | number | boolean | null | DataValue[] | { [key: string]: DataValue };
+type DataObject = { [key: string]: DataValue };
+interface XmlOrderNode {
+  [key: string]: XmlOrderNode[] | Record<string, string> | string;
+}
 
 export function getDataFormats(): { id: FormatId; label: string; languageId: string }[] {
   return [
@@ -22,7 +26,7 @@ function checkKey(key: string) {
   if (["__proto__", "constructor", "prototype"].includes(key)) throw new Error("Unsupported object key: " + key);
 }
 
-function normalize(value: any, path = "$", ancestors = new Set<any>()): DataValue {
+function normalize(value: unknown, path = "$", ancestors = new Set<object>()): DataValue {
   if (value === null || typeof value === "string" || typeof value === "boolean") return value;
   if (typeof value === "number") {
     if (!Number.isFinite(value) || (Number.isInteger(value) && !Number.isSafeInteger(value))) {
@@ -39,8 +43,8 @@ function normalize(value: any, path = "$", ancestors = new Set<any>()): DataValu
   ancestors.add(value);
   try {
     if (Array.isArray(value)) return value.map((item, index) => normalize(item, path + "[" + index + "]", ancestors));
-    const result = Object.create(null);
-    const entries = value instanceof Map ? Array.from(value.entries()) : Object.entries(value);
+    const result: DataObject = Object.create(null);
+    const entries: [unknown, unknown][] = value instanceof Map ? Array.from(value.entries()) : Object.entries(value);
     for (const [key, item] of entries) {
       if (typeof key !== "string") throw new Error("Only string keys can be represented at " + path);
       checkKey(key);
@@ -52,21 +56,22 @@ function normalize(value: any, path = "$", ancestors = new Set<any>()): DataValu
   }
 }
 
-function objectPath(root: any, parts: string[]): any {
+function objectPath(root: DataObject, parts: string[]): DataObject {
   let current = root;
   for (const part of parts) {
     checkKey(part);
     if (!part) throw new Error("Empty key path segment is unsupported");
     if (!Object.prototype.hasOwnProperty.call(current, part)) current[part] = Object.create(null);
-    if (!current[part] || typeof current[part] !== "object" || Array.isArray(current[part])) {
+    const next = current[part];
+    if (!next || typeof next !== "object" || Array.isArray(next)) {
       throw new Error("Conflicting key path: " + parts.join("."));
     }
-    current = current[part];
+    current = next;
   }
   return current;
 }
 
-function assignPath(root: any, parts: string[], value: string, array = false) {
+function assignPath(root: DataObject, parts: string[], value: string, array = false) {
   const key = parts[parts.length - 1];
   checkKey(key);
   if (!key) throw new Error("Empty keys are unsupported");
@@ -74,16 +79,17 @@ function assignPath(root: any, parts: string[], value: string, array = false) {
   const exists = Object.prototype.hasOwnProperty.call(parent, key);
   if (array) {
     if (!exists) parent[key] = [];
-    if (!Array.isArray(parent[key])) throw new Error("Conflicting array key: " + parts.join("."));
-    parent[key].push(value);
+    const values = parent[key];
+    if (!Array.isArray(values)) throw new Error("Conflicting array key: " + parts.join("."));
+    values.push(value);
   } else {
     if (exists) throw new Error("Duplicate or conflicting key path: " + parts.join("."));
     parent[key] = value;
   }
 }
 
-function parseProperties(text: string): object {
-  const result = Object.create(null);
+function parseProperties(text: string): DataObject {
+  const result: DataObject = Object.create(null);
   for (const line of properties.parseLines(text)) {
     if (Array.isArray(line)) assignPath(result, line[0].split("."), line[1]);
   }
@@ -107,8 +113,8 @@ function sectionPath(section: string): string[] {
   return parts.concat(part);
 }
 
-function parseIni(text: string): object {
-  const result = Object.create(null);
+function parseIni(text: string): DataObject {
+  const result: DataObject = Object.create(null);
   let section: string[] = [];
   for (const original of text.split(/\r?\n/)) {
     const line = original.trim();
@@ -141,23 +147,39 @@ const xmlOptions = {
   trimValues: false,
   ignoreDeclaration: true,
 };
-const invalidXmlCharacters = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\ud800-\udfff\ufffe\uffff]/u;
-
-function cleanXml(value: any): any {
-  if (typeof value === "string" && invalidXmlCharacters.test(value)) throw new Error("Invalid XML character");
-  if (Array.isArray(value)) return value.map(cleanXml);
-  if (!value || typeof value !== "object") return value;
-  const children = Object.keys(value).filter((key) => key !== "#text" && !key.startsWith("@_"));
-  if (children.length && Object.prototype.hasOwnProperty.call(value, "#text")) {
-    if (String(value["#text"]).trim())
-      throw new Error("XML mixed content cannot preserve element ordering in this data model");
-    delete value["#text"];
-  }
-  for (const key of Object.keys(value)) value[key] = cleanXml(value[key]);
-  return value;
+function isInvalidXmlCodePoint(code: number): boolean {
+  return (
+    (code < 0x20 && code !== 9 && code !== 10 && code !== 13) ||
+    (code >= 0xd800 && code <= 0xdfff) ||
+    code === 0xfffe ||
+    code === 0xffff ||
+    code > 0x10ffff
+  );
 }
 
-function checkXmlOrder(nodes: any[]) {
+function hasInvalidXmlCharacters(text: string): boolean {
+  for (const character of text) {
+    if (isInvalidXmlCodePoint(character.codePointAt(0))) return true;
+  }
+  return false;
+}
+
+function cleanXml(value: unknown): unknown {
+  if (typeof value === "string" && hasInvalidXmlCharacters(value)) throw new Error("Invalid XML character");
+  if (Array.isArray(value)) return value.map(cleanXml);
+  if (!value || typeof value !== "object") return value;
+  const node = value as Record<string, unknown>;
+  const children = Object.keys(node).filter((key) => key !== "#text" && !key.startsWith("@_"));
+  if (children.length && Object.prototype.hasOwnProperty.call(node, "#text")) {
+    if (String(node["#text"]).trim())
+      throw new Error("XML mixed content cannot preserve element ordering in this data model");
+    delete node["#text"];
+  }
+  for (const key of Object.keys(node)) node[key] = cleanXml(node[key]);
+  return node;
+}
+
+function checkXmlOrder(nodes: XmlOrderNode[]) {
   const seen = new Set<string>();
   let previous: string;
   for (const node of nodes) {
@@ -167,16 +189,23 @@ function checkXmlOrder(nodes: any[]) {
       throw new Error("Interleaved XML elements cannot preserve ordering in this data model");
     seen.add(name);
     previous = name;
-    if (Array.isArray(node[name])) checkXmlOrder(node[name]);
+    const children = node[name];
+    if (Array.isArray(children)) checkXmlOrder(children);
   }
 }
 
 function parseXml(text: string): object {
   if (/<!\s*(?:DOCTYPE|ENTITY)\b/i.test(text)) throw new Error("XML DTD and entity declarations are unsupported");
-  if (invalidXmlCharacters.test(text)) throw new Error("Invalid XML character");
+  if (hasInvalidXmlCharacters(text)) throw new Error("Invalid XML character");
   const validation = xml.XMLValidator.validate(text);
   if (validation !== true) throw new Error("Invalid XML: " + validation.err.msg);
   const entityText = text.replace(/<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<\?[\s\S]*?\?>/g, "");
+  const numericEntities = /&#(x[0-9a-fA-F]+|\d+);/g;
+  let entity: RegExpExecArray;
+  while ((entity = numericEntities.exec(entityText))) {
+    const code = entity[1].startsWith("x") ? parseInt(entity[1].slice(1), 16) : Number(entity[1]);
+    if (isInvalidXmlCodePoint(code)) throw new Error("Invalid XML character");
+  }
   if (/&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/.test(entityText))
     throw new Error("Invalid or undeclared XML entity");
   checkXmlOrder(new xml.XMLParser({ ...xmlOptions, preserveOrder: true }).parse(text));
@@ -191,15 +220,15 @@ function parseXml(text: string): object {
         checkKey(name.replace(/^@_/, ""));
         return name;
       },
-    }).parse(text),
-  );
+    }).parse(text)
+  ) as Record<string, unknown>;
   const roots = Object.keys(result);
   if (roots.length !== 1 || Array.isArray(result[roots[0]])) throw new Error("XML requires a single root element");
   return result;
 }
 
 export function parseData(text: string, format: FormatId): DataValue {
-  let value: any;
+  let value: unknown;
   switch (format) {
     case "json":
       value = JSON.parse(text);
