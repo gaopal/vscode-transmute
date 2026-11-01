@@ -1,5 +1,8 @@
 ## 1.13.1
 
+- Unified command IDs under `transmute.*`, renamed internal and test identifiers, and adopted a new Transmute icon
+- Removed previous command IDs; custom keybindings and scripts must use the new namespace
+
 - Renamed the extension to VSCode Transmute (`gaopal.vscode-transmute`) and moved the source repository to `gaopal/vscode-transmute`
 
 - Resolved TypeScript lint errors and warnings and normalized project formatting to two-space indentation

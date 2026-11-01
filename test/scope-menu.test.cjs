@@ -32,7 +32,7 @@ test('the command palette exposes exactly one Transform entry', () => {
   )
   assert.deepEqual(
     visible.map((item) => item.command),
-    ['dakara-transformer.openMenu']
+    ['transmute.openMenu']
   )
 })
 
@@ -143,13 +143,13 @@ test('menus consolidate modes and dispatch to the original editor, while cancell
   }
   const menu = loadSource('src/TransformMenu.ts', { vscode: h.vscode })
   await menu.openMenu(h.editor)
-  assert.deepEqual(calls, [['dakara-transformer.sortLines', h.editor]])
+  assert.deepEqual(calls, [['transmute.sortLines', h.editor]])
   h.vscode.window.showQuickPick = async () => undefined
   await menu.openMenu(h.editor)
   assert.equal(calls.length, 1)
 })
 
-test('every contributed command stays registered and legacy commands use the unified scope dispatcher', async () => {
+test('every contributed command uses the transmute namespace and stays registered with unified scope', async () => {
   const h = editorHarness('b\na')
   const handlers = new Map(),
     disposed = [],
@@ -178,12 +178,13 @@ test('every contributed command stays registered and legacy commands use the uni
     './TransformMenu': { openMenu() {} },
   }).activate(context)
   const manifest = require('../package.json')
+  assert.ok(manifest.contributes.commands.every((item) => item.command.startsWith('transmute.')))
   assert.deepEqual([...handlers.keys()].sort(), manifest.contributes.commands.map((item) => item.command).sort())
   assert.deepEqual(context.subscriptions, disposed)
-  await handlers.get('dakara-transformer.sortLines')()
+  await handlers.get('transmute.sortLines')()
   assert.deepEqual(calls, [[h.editor, 'sortLines']])
   let called = false
-  handlers.get('dakara-internal.command')(() => {
+  handlers.get('transmute.internal.command')(() => {
     called = true
   })
   assert.ok(called)

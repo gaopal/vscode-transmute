@@ -20,7 +20,7 @@ exports.activate = () => {
       const profile = registry.userDataProfiles.find((profile) => profile.location === profileId)
       evidence.workspace = workspace
       evidence.profile = profile
-      evidence.effectiveProfileMarker = vscode.workspace.getConfiguration('localTransformerSmoke').get('profileMarker')
+      evidence.effectiveProfileMarker = vscode.workspace.getConfiguration('localTransmuteSmoke').get('profileMarker')
       assert.equal(profile.name, 'Windows')
       assert.equal(profileId, '6d6f8e04')
       assert.equal(evidence.effectiveProfileMarker, 'Windows-6d6f8e04')
@@ -43,9 +43,9 @@ exports.activate = () => {
       report.completedAt = new Date().toISOString()
       fs.writeFileSync(reportFile, JSON.stringify(report, null, 2))
       const markdown = [
-        '# Transformer 本地安装测试',
+        '# Transmute 本地安装测试',
         '',
-        `VS Code ${report.vscodeVersion} · Windows profile · Transformer 1.12.2`,
+        `VS Code ${report.vscodeVersion} · Windows profile · Transmute 1.12.2`,
         '',
         `通过 ${report.passed} 项，失败 ${report.failed} 项`,
         '',

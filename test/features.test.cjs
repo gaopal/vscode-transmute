@@ -200,7 +200,7 @@ test('legacy feature commands remain declared for activation and keybinding comp
     'encodingTools',
     'convertDataFormat',
   ]) {
-    const command = `dakara-transformer.${name}`
+    const command = `transmute.${name}`
     assert.ok(manifest.activationEvents.includes('onCommand:' + command))
     assert.equal(manifest.contributes.commands.find((item) => item.command === command).category, 'Transform')
   }

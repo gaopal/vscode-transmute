@@ -56,7 +56,7 @@ async function run(context) {
     await check('Windows profile is isolated from the daily VS Code user data', async () => {
       assert.ok(context.globalStorageUri.fsPath.includes('vscode-test'), 'Unexpected user data directory')
       assert.equal(
-        vscode.workspace.getConfiguration('localTransformerSmoke').get('profileMarker'),
+        vscode.workspace.getConfiguration('localTransmuteSmoke').get('profileMarker'),
         'Windows-6d6f8e04',
         'The Windows profile settings are not active'
       )
@@ -108,7 +108,7 @@ async function run(context) {
     await check('Document spacing edits every line and undoes in one step', async () => {
       const original = '使用VSCode处理100行文本\n下一行A'
       const editor = await open(original)
-      await vscode.commands.executeCommand('dakara-transformer.addChineseEnglishSpacing')
+      await vscode.commands.executeCommand('transmute.addChineseEnglishSpacing')
       assert.equal(editor.document.getText(), '使用 VSCode 处理 100 行文本\n下一行 A')
       await vscode.commands.executeCommand('undo')
       await waitFor(() => editor.document.getText() === original, 'Undo did not restore the document')
@@ -122,25 +122,25 @@ async function run(context) {
         manifest.contributes.commands
           .filter((item) => item.category === 'Transform' && !hidden.has(item.command))
           .map((item) => item.command),
-        ['dakara-transformer.openMenu']
+        ['transmute.openMenu']
       )
     })
     await check('Grouped Transform menu sorts the entire document with no selection', async () => {
       const editor = await open('item10\nitem2\nitem1\n')
-      await choose('dakara-transformer.openMenu', [0, 0, 0])
+      await choose('transmute.openMenu', [0, 0, 0])
       assert.equal(editor.document.getText(), 'item1\nitem2\nitem10\n')
       await vscode.commands.executeCommand('undo')
       assert.equal(editor.document.getText(), 'item10\nitem2\nitem1\n')
     })
     await check('Cancelling the grouped menu leaves the document unchanged', async () => {
       const editor = await open('b\na')
-      await choose('dakara-transformer.openMenu', [0, -1])
+      await choose('transmute.openMenu', [0, -1])
       assert.equal(editor.document.getText(), 'b\na')
     })
     await check('Grouped spacing ignores empty cursors next to real selections', async () => {
       const editor = await open('中文A|中文B')
       editor.selections = [new vscode.Selection(0, 0, 0, 3), new vscode.Selection(0, 4, 0, 4)]
-      await choose('dakara-transformer.openMenu', [0, 10])
+      await choose('transmute.openMenu', [0, 10])
       assert.equal(editor.document.getText(), '中文 A|中文B')
     })
     await check('Hidden sort command preserves text outside multiple partial selections', async () => {
@@ -149,7 +149,7 @@ async function run(context) {
         [7, 10],
         [20, 23],
       ].map(([start, end]) => new vscode.Selection(editor.document.positionAt(start), editor.document.positionAt(end)))
-      await vscode.commands.executeCommand('dakara-transformer.sortLines')
+      await vscode.commands.executeCommand('transmute.sortLines')
       assert.equal(editor.document.getText(), 'PREFIX a\nb SUFFIX | y\nz END')
       await vscode.commands.executeCommand('undo')
       assert.equal(editor.document.getText(), 'PREFIX b\na SUFFIX | z\ny END')
@@ -157,28 +157,28 @@ async function run(context) {
     await check('Multiple empty cursors transform the entire document once', async () => {
       const editor = await open('a\nb')
       editor.selections = [new vscode.Selection(0, 0, 0, 0), new vscode.Selection(1, 0, 1, 0)]
-      await choose('dakara-transformer.encodingTools', [0])
+      await choose('transmute.encodingTools', [0])
       assert.equal(editor.document.getText(), 'YQpi')
     })
     await check('Whole-document spacing edits every line in the real editor', async () => {
       const editor = await open('中文A\n数字2')
-      await vscode.commands.executeCommand('dakara-transformer.addChineseEnglishSpacingInDocument')
+      await vscode.commands.executeCommand('transmute.addChineseEnglishSpacingInDocument')
       assert.equal(editor.document.getText(), '中文 A\n数字 2')
     })
     await check('Encoding menu converts Chinese to UTF-8 Base64 in the real editor', async () => {
       const editor = await open('中文')
-      await choose('dakara-transformer.encodingTools', [0])
+      await choose('transmute.encodingTools', [0])
       assert.equal(editor.document.getText(), '5Lit5paH')
     })
     await check('Cancelling the real encoding menu preserves the source', async () => {
       const editor = await open('cancel me')
-      await choose('dakara-transformer.encodingTools', [-1])
+      await choose('transmute.encodingTools', [-1])
       assert.equal(editor.document.getText(), 'cancel me')
     })
     await check('JSON-to-YAML menus produce a separate real document', async () => {
       fromPackage('DataFormats').getDataFormats()
       const editor = await open('{"app":{"name":"demo"}}', 'json')
-      await choose('dakara-transformer.convertDataFormat', [0, 0])
+      await choose('transmute.convertDataFormat', [0, 0])
       const result = vscode.window.activeTextEditor.document
       assert.notEqual(result.uri.toString(), editor.document.uri.toString())
       assert.match(result.getText(), /name: demo/)
@@ -190,7 +190,7 @@ async function run(context) {
       const index = targets.findIndex((target) => target.language === 'python' && target.variant === 'Requests')
       assert.ok(index >= 0)
       const editor = await open('curl https://example.test/items')
-      await choose('dakara-transformer.convertCurlToCode', [index])
+      await choose('transmute.convertCurlToCode', [index])
       const result = vscode.window.activeTextEditor.document
       assert.notEqual(result.uri.toString(), editor.document.uri.toString())
       assert.match(result.getText(), /requests/)
@@ -201,7 +201,7 @@ async function run(context) {
       const operations = fromPackage('TextEncoding').getTextOperations()
       const index = operations.findIndex((operation) => operation.id === 'aes:encrypt')
       const editor = await open('secret test text')
-      await choose('dakara-transformer.encodingTools', [index], true)
+      await choose('transmute.encodingTools', [index], true)
       assert.equal(editor.document.getText(), 'secret test text')
     })
     await check('Packaged AES round-trip and authentication run in the VS Code extension host', async () => {
@@ -246,9 +246,9 @@ async function run(context) {
   report.failed = report.results.length - report.passed
   persist()
   const markdown = [
-    '# Transformer 本地安装测试',
+    '# Transmute 本地安装测试',
     '',
-    `VS Code ${report.vscodeVersion} · Windows profile · Transformer 1.13.1`,
+    `VS Code ${report.vscodeVersion} · Windows profile · Transmute 1.13.1`,
     '',
     `通过 ${report.passed} 项，失败 ${report.failed} 项`,
     '',

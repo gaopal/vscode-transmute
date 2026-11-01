@@ -64,7 +64,7 @@ async function build() {
   run('git', ['clone', '--no-checkout', commonRepository, commonSource])
   run('git', ['-C', commonSource, 'checkout', '--detach', commonCommit])
   writeManifest(tools, {
-    name: 'transformer-release-tools',
+    name: 'transmute-release-tools',
     private: true,
     version: '1.0.0',
     dependencies: {
@@ -86,7 +86,7 @@ async function build() {
     'CHANGELOG.md',
     'LICENSE',
     '.vscodeignore',
-    'transformer-icon.png',
+    'transmute-icon.png',
     'language-configuration.json',
     'macro.tmLanguage',
     'tsconfig.json',
@@ -150,7 +150,7 @@ async function build() {
   npm(['run', 'test:all'], {
     env: {
       ...process.env,
-      TRANSFORMER_TEST_DEPENDENCIES: tools,
+      TRANSMUTE_TEST_DEPENDENCIES: tools,
       NODE_PATH: path.join(stage, 'node_modules'),
       REFACTOR_BASELINE: '',
     },

@@ -3,7 +3,7 @@
   "displayName": "VSCode Transmute",
   "description": "Filter, Sort, Unique, Reverse, Align, CSV, Line Selection and more text Transformations",
   "version": "1.13.1",
-  "icon": "transformer-icon.png",
+  "icon": "transmute-icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/gaopal/vscode-transmute"
@@ -16,246 +16,246 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:dakara-internal.command",
-    "onCommand:dakara-transformer.JsonAsText",
-    "onCommand:dakara-transformer.alignCSV",
-    "onCommand:dakara-transformer.alignCursor",
-    "onCommand:dakara-transformer.commands",
-    "onCommand:dakara-transformer.compactCSV",
-    "onCommand:dakara-transformer.copyToNewDocument",
-    "onCommand:dakara-transformer.countUniqueLinesNewDocument",
-    "onCommand:dakara-transformer.escapes",
-    "onCommand:dakara-transformer.filter",
-    "onCommand:dakara-transformer.filterAsNewDocument",
-    "onCommand:dakara-transformer.joinLines",
-    "onCommand:dakara-transformer.linesAsJSON",
-    "onCommand:dakara-transformer.macroCreate",
-    "onCommand:dakara-transformer.macroDelete",
-    "onCommand:dakara-transformer.macroEdit",
-    "onCommand:dakara-transformer.macroRepeat",
-    "onCommand:dakara-transformer.macroRun",
-    "onCommand:dakara-transformer.normalizeDiacriticalMarks",
-    "onCommand:dakara-transformer.randomLines",
-    "onCommand:dakara-transformer.randomSelections",
-    "onCommand:dakara-transformer.reverseLines",
-    "onCommand:dakara-transformer.reverseSelections",
-    "onCommand:dakara-transformer.rotateBackwardSelections",
-    "onCommand:dakara-transformer.rotateForwardSelections",
-    "onCommand:dakara-transformer.selectHighlights",
-    "onCommand:dakara-transformer.selectLines",
-    "onCommand:dakara-transformer.selectionAsJSON",
-    "onCommand:dakara-transformer.sortByLineLength",
-    "onCommand:dakara-transformer.sortLines",
-    "onCommand:dakara-transformer.sortSelections",
-    "onCommand:dakara-transformer.splitLines",
-    "onCommand:dakara-transformer.splitLinesBeforeDelimiter",
-    "onCommand:dakara-transformer.splitLinesAfterDelimiter",
-    "onCommand:dakara-transformer.trimLines",
-    "onCommand:dakara-transformer.trimSelections",
-    "onCommand:dakara-transformer.uniqueLines",
-    "onCommand:dakara-transformer.uniqueLinesNewDocument",
-    "onCommand:dakara-transformer.addChineseEnglishSpacing",
-    "onCommand:dakara-transformer.addChineseEnglishSpacingInDocument",
-    "onCommand:dakara-transformer.convertCurlToCode",
-    "onCommand:dakara-transformer.encodingTools",
-    "onCommand:dakara-transformer.convertDataFormat",
-    "onCommand:dakara-transformer.openMenu"
+    "onCommand:transmute.internal.command",
+    "onCommand:transmute.JsonAsText",
+    "onCommand:transmute.alignCSV",
+    "onCommand:transmute.alignCursor",
+    "onCommand:transmute.commands",
+    "onCommand:transmute.compactCSV",
+    "onCommand:transmute.copyToNewDocument",
+    "onCommand:transmute.countUniqueLinesNewDocument",
+    "onCommand:transmute.escapes",
+    "onCommand:transmute.filter",
+    "onCommand:transmute.filterAsNewDocument",
+    "onCommand:transmute.joinLines",
+    "onCommand:transmute.linesAsJSON",
+    "onCommand:transmute.macroCreate",
+    "onCommand:transmute.macroDelete",
+    "onCommand:transmute.macroEdit",
+    "onCommand:transmute.macroRepeat",
+    "onCommand:transmute.macroRun",
+    "onCommand:transmute.normalizeDiacriticalMarks",
+    "onCommand:transmute.randomLines",
+    "onCommand:transmute.randomSelections",
+    "onCommand:transmute.reverseLines",
+    "onCommand:transmute.reverseSelections",
+    "onCommand:transmute.rotateBackwardSelections",
+    "onCommand:transmute.rotateForwardSelections",
+    "onCommand:transmute.selectHighlights",
+    "onCommand:transmute.selectLines",
+    "onCommand:transmute.selectionAsJSON",
+    "onCommand:transmute.sortByLineLength",
+    "onCommand:transmute.sortLines",
+    "onCommand:transmute.sortSelections",
+    "onCommand:transmute.splitLines",
+    "onCommand:transmute.splitLinesBeforeDelimiter",
+    "onCommand:transmute.splitLinesAfterDelimiter",
+    "onCommand:transmute.trimLines",
+    "onCommand:transmute.trimSelections",
+    "onCommand:transmute.uniqueLines",
+    "onCommand:transmute.uniqueLinesNewDocument",
+    "onCommand:transmute.addChineseEnglishSpacing",
+    "onCommand:transmute.addChineseEnglishSpacingInDocument",
+    "onCommand:transmute.convertCurlToCode",
+    "onCommand:transmute.encodingTools",
+    "onCommand:transmute.convertDataFormat",
+    "onCommand:transmute.openMenu"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
-        "command": "dakara-transformer.openMenu",
+        "command": "transmute.openMenu",
         "title": "Open Menu...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.sortLines",
+        "command": "transmute.sortLines",
         "title": "Sort Lines",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.sortSelections",
+        "command": "transmute.sortSelections",
         "title": "Sort Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.filterAsNewDocument",
+        "command": "transmute.filterAsNewDocument",
         "title": "Filter Lines As New Document...",
         "category": "Transform"
       },
       {
-        "command": "dakara-internal.command",
+        "command": "transmute.internal.command",
         "title": "internal use only",
         "category": "Transform-Internal"
       },
       {
-        "command": "dakara-transformer.filter",
+        "command": "transmute.filter",
         "title": "Filter Lines...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.reverseLines",
+        "command": "transmute.reverseLines",
         "title": "Reverse Lines",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.reverseSelections",
+        "command": "transmute.reverseSelections",
         "title": "Reverse Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.alignCursor",
+        "command": "transmute.alignCursor",
         "title": "Align To Cursor",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.alignCSV",
+        "command": "transmute.alignCSV",
         "title": "Align CSV",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.compactCSV",
+        "command": "transmute.compactCSV",
         "title": "Compact CSV",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.commands",
+        "command": "transmute.commands",
         "title": "List All Commands",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.uniqueLines",
+        "command": "transmute.uniqueLines",
         "title": "Unique Lines",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.uniqueLinesNewDocument",
+        "command": "transmute.uniqueLinesNewDocument",
         "title": "Unique Lines As New Document",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.sortByLineLength",
+        "command": "transmute.sortByLineLength",
         "title": "Sort Lines By Length",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.countUniqueLinesNewDocument",
+        "command": "transmute.countUniqueLinesNewDocument",
         "title": "Count Duplicate Lines As New Document",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.copyToNewDocument",
+        "command": "transmute.copyToNewDocument",
         "title": "Copy To New Document",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.selectLines",
+        "command": "transmute.selectLines",
         "title": "Select Full Lines (of all current selections)",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.selectHighlights",
+        "command": "transmute.selectHighlights",
         "title": "Select Highlights (make selections of all highlighted text)",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.linesAsJSON",
+        "command": "transmute.linesAsJSON",
         "title": "Lines As JSON String Array",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.selectionAsJSON",
+        "command": "transmute.selectionAsJSON",
         "title": "Selection As JSON String",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.JsonAsText",
+        "command": "transmute.JsonAsText",
         "title": "JSON String As Text",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.trimLines",
+        "command": "transmute.trimLines",
         "title": "Trim Lines",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.trimSelections",
+        "command": "transmute.trimSelections",
         "title": "Trim Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.escapes",
+        "command": "transmute.escapes",
         "title": "Encode / Decode ...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.randomLines",
+        "command": "transmute.randomLines",
         "title": "Randomize Lines",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.randomSelections",
+        "command": "transmute.randomSelections",
         "title": "Randomize Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.joinLines",
+        "command": "transmute.joinLines",
         "title": "Join Lines...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.splitLines",
+        "command": "transmute.splitLines",
         "title": "Split Lines...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.splitLinesBeforeDelimiter",
+        "command": "transmute.splitLinesBeforeDelimiter",
         "title": "Split Lines Before...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.splitLinesAfterDelimiter",
+        "command": "transmute.splitLinesAfterDelimiter",
         "title": "Split Lines After...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.rotateForwardSelections",
+        "command": "transmute.rotateForwardSelections",
         "title": "Rotate Forward Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.rotateBackwardSelections",
+        "command": "transmute.rotateBackwardSelections",
         "title": "Rotate Backward Selections",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.normalizeDiacriticalMarks",
+        "command": "transmute.normalizeDiacriticalMarks",
         "title": "Normalize Diacritical Marks (remove accents)",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.addChineseEnglishSpacing",
+        "command": "transmute.addChineseEnglishSpacing",
         "title": "Add Chinese-English Spacing",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
+        "command": "transmute.addChineseEnglishSpacingInDocument",
         "title": "Add Chinese-English Spacing in Document",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.convertCurlToCode",
+        "command": "transmute.convertCurlToCode",
         "title": "Convert cURL to Code...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.encodingTools",
+        "command": "transmute.encodingTools",
         "title": "Encoding / Crypto Tools...",
         "category": "Transform"
       },
       {
-        "command": "dakara-transformer.convertDataFormat",
+        "command": "transmute.convertDataFormat",
         "title": "Convert Data Format...",
         "category": "Transform"
       }
@@ -263,155 +263,155 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "dakara-transformer.sortLines",
+          "command": "transmute.sortLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.sortSelections",
+          "command": "transmute.sortSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.filterAsNewDocument",
+          "command": "transmute.filterAsNewDocument",
           "when": "false"
         },
         {
-          "command": "dakara-internal.command",
+          "command": "transmute.internal.command",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.filter",
+          "command": "transmute.filter",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.reverseLines",
+          "command": "transmute.reverseLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.reverseSelections",
+          "command": "transmute.reverseSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.alignCursor",
+          "command": "transmute.alignCursor",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.alignCSV",
+          "command": "transmute.alignCSV",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.compactCSV",
+          "command": "transmute.compactCSV",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.commands",
+          "command": "transmute.commands",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.uniqueLines",
+          "command": "transmute.uniqueLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.uniqueLinesNewDocument",
+          "command": "transmute.uniqueLinesNewDocument",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.sortByLineLength",
+          "command": "transmute.sortByLineLength",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.countUniqueLinesNewDocument",
+          "command": "transmute.countUniqueLinesNewDocument",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.copyToNewDocument",
+          "command": "transmute.copyToNewDocument",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.selectLines",
+          "command": "transmute.selectLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.selectHighlights",
+          "command": "transmute.selectHighlights",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.linesAsJSON",
+          "command": "transmute.linesAsJSON",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.selectionAsJSON",
+          "command": "transmute.selectionAsJSON",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.JsonAsText",
+          "command": "transmute.JsonAsText",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.trimLines",
+          "command": "transmute.trimLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.trimSelections",
+          "command": "transmute.trimSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.escapes",
+          "command": "transmute.escapes",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.randomLines",
+          "command": "transmute.randomLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.randomSelections",
+          "command": "transmute.randomSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.joinLines",
+          "command": "transmute.joinLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.splitLines",
+          "command": "transmute.splitLines",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.splitLinesBeforeDelimiter",
+          "command": "transmute.splitLinesBeforeDelimiter",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.splitLinesAfterDelimiter",
+          "command": "transmute.splitLinesAfterDelimiter",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.rotateForwardSelections",
+          "command": "transmute.rotateForwardSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.rotateBackwardSelections",
+          "command": "transmute.rotateBackwardSelections",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.normalizeDiacriticalMarks",
+          "command": "transmute.normalizeDiacriticalMarks",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.addChineseEnglishSpacing",
+          "command": "transmute.addChineseEnglishSpacing",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.addChineseEnglishSpacingInDocument",
+          "command": "transmute.addChineseEnglishSpacingInDocument",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.convertCurlToCode",
+          "command": "transmute.convertCurlToCode",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.encodingTools",
+          "command": "transmute.encodingTools",
           "when": "false"
         },
         {
-          "command": "dakara-transformer.convertDataFormat",
+          "command": "transmute.convertDataFormat",
           "when": "false"
         }
       ]

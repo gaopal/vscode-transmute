@@ -90,7 +90,7 @@ export async function openMenu(editor: vscode.TextEditor) {
       placeHolder: scope + " — choose a transformation",
     });
     if (!choice) return;
-    if (choice.command) return vscode.commands.executeCommand("dakara-transformer." + choice.command, editor);
+    if (choice.command) return vscode.commands.executeCommand("transmute." + choice.command, editor);
     title = "Transform / " + choice.label;
     choices = choice.children;
   }

@@ -9,7 +9,7 @@ import { selectionInputs, openResult } from "./EditorScope";
 export function activate(context: vscode.ExtensionContext) {
   const register = (name: string, callback: (editor: vscode.TextEditor) => unknown) => {
     context.subscriptions.push(
-      vscode.commands.registerCommand("dakara-transformer." + name, (editor?: vscode.TextEditor) =>
+      vscode.commands.registerCommand("transmute." + name, (editor?: vscode.TextEditor) =>
         callback(editor || vscode.window.activeTextEditor)
       )
     );
@@ -69,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
   register("encodingTools", conversionCommands.encodingTools);
   register("escapes", conversionCommands.encodingTools);
   register("convertDataFormat", conversionCommands.convertDataFormat);
-  context.subscriptions.push(vscode.commands.registerCommand("dakara-internal.command", (onCommand) => onCommand()));
+  context.subscriptions.push(vscode.commands.registerCommand("transmute.internal.command", (onCommand) => onCommand()));
 }
 
 export function deactivate(): void {

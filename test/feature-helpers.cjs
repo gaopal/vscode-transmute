@@ -4,7 +4,7 @@ const vm = require('node:vm')
 const { createRequire } = require('node:module')
 
 const root = path.resolve(__dirname, '..')
-const dependencyRequire = createRequire(path.join(process.env.TRANSFORMER_TEST_DEPENDENCIES || root, 'package.json'))
+const dependencyRequire = createRequire(path.join(process.env.TRANSMUTE_TEST_DEPENDENCIES || root, 'package.json'))
 const ts = dependencyRequire('typescript')
 
 function loadSource(file, overrides = {}, cache = new Map()) {

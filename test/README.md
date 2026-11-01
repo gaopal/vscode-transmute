@@ -4,7 +4,7 @@ Run `npm run test:tools` for the encoding, encryption, data format and command w
 
 Run `npm run test:features` for spacing and curl conversion checks, or `npm run test:all` for both feature and regression suites. These commands require the project's TypeScript and Postman dependencies. The feature suite uses the real importer and generators for every available target, with controlled editor substitutes for command workflows
 
-For an isolated dependency installation, set `TRANSFORMER_TEST_DEPENDENCIES` to the absolute folder containing that installation's `package.json` and `node_modules`. The test helper reads dependencies from that folder without changing production module resolution
+For an isolated dependency installation, set `TRANSMUTE_TEST_DEPENDENCIES` to the absolute folder containing that installation's `package.json` and `node_modules`. The test helper reads dependencies from that folder without changing production module resolution
 
 Run `npm run test:refactor` with Node.js 24 or newer. This suite uses Node's experimental TypeScript transformation and VM modules without installing project dependencies. It checks behavior but does not perform TypeScript type checking
 

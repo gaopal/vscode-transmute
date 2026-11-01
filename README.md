@@ -21,7 +21,7 @@ Text transformations use one scope rule: nonempty selections are independent inp
 
 Replacements are applied in one undo step after every input succeeds. Cancelling a menu or prompt leaves the source unchanged. Functions that open new documents produce a separate result for each input. Filter context is restricted to the input selections
 
-Existing command IDs remain available for keybindings and scripts, with the same automatic scope rule. They are hidden from the command palette. The old whole-document spacing ID is now an alias for the unified spacing function. The old Encode / Decode ID opens the unified UTF-8 encoding tools
+All extension command IDs use the `transmute.*` namespace, for example `transmute.openMenu` and `transmute.sortLines`. Update custom keybindings and scripts to the new namespace; previous command IDs are no longer registered. Individual commands are hidden from the command palette and use the same automatic scope rule. The `transmute.addChineseEnglishSpacingInDocument` command is an alias for the unified spacing function, and `transmute.escapes` opens the unified UTF-8 encoding tools
 
 ```mermaid
 flowchart TD
