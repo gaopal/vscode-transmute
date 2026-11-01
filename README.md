@@ -43,12 +43,12 @@ Draft releases and pre-releases do not publish a stable Marketplace version. A r
 
 Configure the `gaopal` publisher at [Manage Publishers & Extensions](https://marketplace.visualstudio.com/manage) before the first run. Under Trusted Publishing, create a policy with these exact values
 
-| Field            | Value                                                               |
-| ---------------- | ------------------------------------------------------------------- |
-| Repository owner | `gaopal`                                                            |
-| Repository       | `vscode-transformer`                                                |
-| Workflow         | `publish.yml`                                                       |
-| Environment      | Leave empty because this workflow does not use a GitHub environment |
+| Field            | Value                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| Repository owner | `gaopal`                                                      |
+| Repository       | `vscode-transformer`                                          |
+| Workflow         | `publish.yml`                                                 |
+| Environment      | `production`, matching the publish job and Marketplace policy |
 
 The publish job uses OIDC with `id-token: write`, so no `VSCE_PAT` secret is required. See the [official Trusted Publishing instructions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing)
 
