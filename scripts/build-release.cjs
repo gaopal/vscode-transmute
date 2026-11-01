@@ -171,7 +171,7 @@ async function build() {
   ]) {
     if (!files.includes(required)) throw new Error('Missing packaged file: ' + required)
   }
-  const filename = `transformer-${manifest.version}.vsix`
+  const filename = `${manifest.name}-${manifest.version}.vsix`
   const artifact = path.join(releaseRoot, filename)
   await vsce.createVSIX({ cwd: stage, packagePath: artifact, dependencies: true, useYarn: false })
 

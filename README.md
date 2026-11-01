@@ -1,4 +1,6 @@
-# Transformer
+# VSCode Transmute
+
+Transmute means to change form: text transformations, encoding and encryption, data format conversion, and cURL-to-code generation in one extension. The Marketplace extension ID is `gaopal.vscode-transmute`, and the source repository is [gaopal/vscode-transmute](https://github.com/gaopal/vscode-transmute)
 
 Version 1.13.1 groups transformations under one menu and applies each operation to selected text or the entire document
 
@@ -46,11 +48,11 @@ Configure the `gaopal` publisher at [Manage Publishers & Extensions](https://mar
 | Field            | Value                                                         |
 | ---------------- | ------------------------------------------------------------- |
 | Repository owner | `gaopal`                                                      |
-| Repository       | `vscode-transformer`                                          |
+| Repository       | `vscode-transmute`                                            |
 | Workflow         | `publish.yml`                                                 |
 | Environment      | `production`, matching the publish job and Marketplace policy |
 
-The publish job uses OIDC with `id-token: write`, so no `VSCE_PAT` secret is required. See the [official Trusted Publishing instructions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing)
+The publish job uses OIDC with `id-token: write`, so no `VSCE_PAT` secret is required. After renaming the repository, verify that the Marketplace Trusted Publishing policy matches the repository name and ID before publishing. See the [official Trusted Publishing instructions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing)
 
 ```mermaid
 flowchart LR
@@ -70,7 +72,7 @@ To run the build locally, use Node.js 24 or newer with npm and Git, then run
 node scripts/build-release.cjs
 ```
 
-The script downloads the shared library at commit `e8dec053a8830a5efc2ada3cd8cd8735f6a3e9b3`, installs isolated build tools and production dependencies from the official npm registry without lifecycle scripts or lock files, compiles both projects and runs `npm run test:all`. It then creates `out/release/transformer-<version>.vsix` and checks both packaged identity manifests. Temporary source, tools and dependencies stay under `out/release/build-*`; the project manifest and installed development environment are left intact
+The script downloads the shared library at commit `e8dec053a8830a5efc2ada3cd8cd8735f6a3e9b3`, installs isolated build tools and production dependencies from the official npm registry without lifecycle scripts or lock files, compiles both projects and runs `npm run test:all`. It then creates `out/release/vscode-transmute-<version>.vsix` and checks both packaged identity manifests. Temporary source, tools and dependencies stay under `out/release/build-*`; the project manifest and installed development environment are left intact
 
 This project uses `npm install --package-lock=false` in its isolated build directories because it has no lock file. The shared library commit, direct runtime dependencies and build-tool versions are pinned; transitive dependency ranges can still resolve newer compatible versions on later runs
 

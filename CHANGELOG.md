@@ -1,5 +1,7 @@
 ## 1.13.1
 
+- Renamed the extension to VSCode Transmute (`gaopal.vscode-transmute`) and moved the source repository to `gaopal/vscode-transmute`
+
 - Resolved TypeScript lint errors and warnings and normalized project formatting to two-space indentation
 - Rejected invalid XML numeric character references while preserving valid Unicode and literal entity text in CDATA and comments
 

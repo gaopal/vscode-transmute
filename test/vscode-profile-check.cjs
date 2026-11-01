@@ -24,7 +24,7 @@ exports.activate = () => {
       assert.equal(profile.name, 'Windows')
       assert.equal(profileId, '6d6f8e04')
       assert.equal(evidence.effectiveProfileMarker, 'Windows-6d6f8e04')
-      assert.ok(vscode.extensions.getExtension('dakara.transformer').isActive)
+      assert.ok(vscode.extensions.getExtension('gaopal.vscode-transmute').isActive)
       evidence.status = 'passed'
       const reportFile = path.join(directory, 'installed-smoke.json')
       if (!fs.existsSync(path.join(directory, 'installed-smoke.initial.json')))

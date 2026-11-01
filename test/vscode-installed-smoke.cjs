@@ -43,7 +43,7 @@ async function run(context) {
   }
   let extension
   await check('Packaged extension activates as version 1.13.1', async () => {
-    extension = vscode.extensions.getExtension('dakara.transformer')
+    extension = vscode.extensions.getExtension('gaopal.vscode-transmute')
     assert.ok(extension, 'Packaged extension is not installed')
     assert.equal(extension.packageJSON.version, '1.13.1')
     await extension.activate()

@@ -1,12 +1,12 @@
 {
-  "name": "transformer",
-  "displayName": "Transformer",
+  "name": "vscode-transmute",
+  "displayName": "VSCode Transmute",
   "description": "Filter, Sort, Unique, Reverse, Align, CSV, Line Selection and more text Transformations",
   "version": "1.13.1",
   "icon": "transformer-icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dakaraphi/vscode-extension-transformer"
+    "url": "https://github.com/gaopal/vscode-transmute"
   },
   "publisher": "gaopal",
   "engines": {
